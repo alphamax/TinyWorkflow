@@ -1,0 +1,281 @@
+﻿using TinyWorkflow.Actions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TinyWorkflow
+{
+
+    /// <summary>
+    /// Represent a workflow.
+    /// Can be configured in fluent mode.
+    /// </summary>
+    /// <typeparam name="T">Type of the state</typeparam>
+    public class Workflow<T>
+    {
+        #region Public
+
+        /// <summary>
+        /// State embeded in the actual Workflow
+        /// </summary>
+        public T Workload { get; set; }
+
+        /// <summary>
+        /// State of the workflow.
+        /// </summary>
+        public WorkflowState State
+        {
+            get
+            {
+                return _State;
+            }
+        }
+
+        #endregion
+
+        #region Private
+        private List<WorkflowAction<T>> _Actions = new List<WorkflowAction<T>>();
+        private WorkflowState _State = WorkflowState.NotRunning;
+        private int _WorkflowStep = 0;
+        #endregion
+
+        /// <summary>
+        /// Start a workflow with the given workload
+        /// </summary>
+        /// <param name="workload"></param>
+        public void Start(T workload)
+        {
+            Workload = workload;
+            if (_State == WorkflowState.NotRunning)
+            {
+                _State = WorkflowState.Running;
+                Run();
+            }
+            else if (_State == WorkflowState.Running)
+            {
+                Run();
+            }
+        }
+
+        public void End()
+        {
+            //Just in case new states later
+            if (_State == WorkflowState.NotRunning || _State == WorkflowState.Running)
+            {
+                _State = WorkflowState.End;
+            }
+        }
+
+        /// <summary>
+        /// Reset the workflow run state.
+        /// </summary>
+        public void Reset()
+        {
+            _WorkflowStep = 0;
+            _State = WorkflowState.NotRunning;
+            foreach (var item in _Actions)
+            {
+                item.Reset();
+            }
+        }
+
+        /// <summary>
+        /// Unblock a blocked workflow.
+        /// </summary>
+        public void Unblock()
+        {
+            Unblock(1);
+        }
+
+        /// <summary>
+        /// Unblock a blocked workflow.
+        /// </summary>
+        public void Unblock(int level)
+        {
+            UnblockInternal(level);
+            Run();
+        }
+
+        /// <summary>
+        /// Unblock a blocked workflow.
+        /// </summary>
+        internal void UnblockInternal(int level)
+        {
+            if (_Actions[_WorkflowStep] != null)
+            {
+                _Actions[_WorkflowStep].Unblock(level);
+            }
+            _State = WorkflowState.Running;
+        }
+
+        /// <summary>
+        /// Unblock a blocked workflow.
+        /// </summary>
+        public void UnblockAll()
+        {
+            Unblock(Int32.MaxValue);
+        }
+
+        /// <summary>
+        /// Configure a 'block' step which block the execution of the workflow.
+        /// </summary>
+        public Workflow<T> Block()
+        {
+            Block(1);
+            return this;
+        }
+
+        /// <summary>
+        /// Configure a 'block' step which block the execution of the workflow.
+        /// </summary>
+        /// <param name="blockCount">Number of unblock that must be called before starting the workflow.</param>
+        public Workflow<T> Block(int blockCount)
+        {
+           Block((obj) => { return blockCount; });
+            return this;
+        }
+
+        /// <summary>
+        /// Configure a 'block' step which block the execution of the workflow.
+        /// </summary>
+        /// <param name="blockCount">Function that retuen dynamic block count. Evaluated late after definition.</param>
+        public Workflow<T> Block(Func<T,int> blockCount)
+        {
+            _Actions.Add(new BlockWorkflowAction<T>(blockCount));
+            return this;
+        }
+
+
+        /// <summary>
+        /// Configure a 'Go' step.
+        /// </summary>
+        /// <param name="action">Action that need to be run</param>
+        /// <returns></returns>
+        public Workflow<T> Do(Action<T> action)
+        {
+            _Actions.Add(new GoWorkflowAction<T>(action));
+            return this;
+        }
+
+        /// <summary>
+        /// Configure a 'Go' step.
+        /// </summary>
+        /// <param name="actions">Actions that need to be run</param>
+        /// <returns></returns>
+        public Workflow<T> DoAsynch(params Action<T>[] actions)
+        {
+            _Actions.Add(new MultipleGoWorkflowAction<T>(actions));
+            return this;
+        }
+
+        /// <summary>
+        /// Configure a 'Foreach' step.
+        /// </summary>
+        /// <typeparam name="U">Type of parameter you want to loop on.</typeparam>
+        /// <param name="itemExtractor">Function that return the list of items.</param>
+        /// <param name="action">Action that must be done on each loop.</param>
+        /// <returns></returns>
+        public Workflow<T> Foreach<U>(Func<T, IEnumerable<U>> itemExtractor, Action<Tuple<U, T>> action)
+        {
+            return Foreach(itemExtractor, (new Workflow<Tuple<U, T>>()).Do(action));
+        }
+
+        /// <summary>
+        /// Configure a 'Foreach' step.
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="itemExtractor">Function that will be dynamicaly resolved and list items.</param>
+        /// <param name="workflow">Workflow that will be run for each item listed.</param>
+        /// <returns></returns>
+        public Workflow<T> Foreach<U>(Func<T, IEnumerable<U>> itemExtractor, Workflow<Tuple<U, T>> workflow)
+        {
+            _Actions.Add(new ForWorkflowAction<U, T>(itemExtractor, workflow));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Run a step and block while the condition is true.
+        /// </summary>
+        /// <param name="action">Action that must be run</param>
+        /// <param name="condition">Condition to run the action.</param>
+        /// <returns></returns>
+        public Workflow<T> While(Func<T, bool> condition, Action<T> action)
+        {
+            _Actions.Add(new WhileWorkflowAction<T>(condition, action));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Run a step and block while the condition is true.
+        /// </summary>
+        /// <param name="workflow">Workflow that must be run</param>
+        /// <param name="condition">Condition to run the action.</param>
+        /// <returns></returns>
+        public Workflow<T> While(Func<T, bool> condition, Workflow<T> workflow)
+        {
+            _Actions.Add(new WhileWorkflowAction<T>(condition, workflow));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Run a step depending the condition.
+        /// </summary>
+        /// <param name="condition">Condition to run the action.</param>
+        /// <param name="actionIfTrue">Action that must be run if contition is true</param>
+        /// <param name="actionIfFalse">Action that must be run if condition is false</param>
+        /// <returns></returns>
+        public Workflow<T> If(Func<T, bool> condition, Action<T> actionIfTrue, Action<T> actionIfFalse)
+        {
+            _Actions.Add(new IfWorkflowAction<T>(condition, actionIfTrue, actionIfFalse));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Run a step depending the condition.
+        /// </summary>
+        /// <param name="condition">Condition to run the action.</param>
+        /// <param name="actionsIfTrue">Actions that must be run if contition is true</param>
+        /// <param name="actionsIfFalse">Actions that must be run if condition is false</param>
+        /// <returns></returns>
+        public Workflow<T> If(Func<T, bool> condition, Workflow<T> actionsIfTrue, Workflow<T> actionsIfFalse)
+        {
+            _Actions.Add(new IfWorkflowAction<T>(condition, actionsIfTrue, actionsIfFalse));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Run the workflow.
+        /// </summary>
+        private void Run()
+        {
+            while (_WorkflowStep < _Actions.Count)
+            {
+                if (_State == WorkflowState.Running)
+                {
+                    switch (_Actions[_WorkflowStep].State)
+                    {
+                        case WorkflowActionState.Blocked:
+                            _State = WorkflowState.Blocked; 
+                            return ;
+                        case WorkflowActionState.Ended:
+                            _WorkflowStep++;
+                            break;
+                        case WorkflowActionState.Ready:
+                            _Actions[_WorkflowStep].Resolve(Workload);
+                            _Actions[_WorkflowStep].Run(Workload);
+                            break;
+                    }
+                }
+            }
+            _State = WorkflowState.End;
+        }
+
+    }
+}
