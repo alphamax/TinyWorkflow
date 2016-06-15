@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TinyWorkflow</name>
+    </assembly>
+    <members>
+        <member name="T:TinyWorkflow.Actions.WorkflowAction`1">
+            <summary>
+            Workflow action that is representing a workflow step.
+            </summary>
+            <typeparam name="T">Type of the state linked to the workflow.</typeparam>
+        </member>
+        <member name="M:TinyWorkflow.Actions.WorkflowAction`1.Resolve(`0)">
+            <summary>
+            Resolve the dynamic part of the step.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Actions.WorkflowAction`1.Reset">
+            <summary>
+            Reset the action to it's initial state.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Actions.WorkflowAction`1.Run(`0)">
+            <summary>
+            Run the step
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:TinyWorkflow.Actions.WorkflowAction`1.Unblock(System.Int32)">
+            <summary>
+            Unblock the step.
+            </summary>
+            <param name="unblockLevel"></param>
+        </member>
+        <member name="P:TinyWorkflow.Actions.WorkflowAction`1.State">
+            <summary>
+            State of the workflow.
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.BlockWorkflowAction`1.BlockCountFunc">
+            <summary>
+            Function that will return dynamicaly the number of block count.
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.BlockWorkflowAction`1.BlockCount">
+            <summary>
+            Once resolved, keep the value of block count.
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.BlockWorkflowAction`1.UnblockedCount">
+            <summary>
+            How many times the unblock method has been called.
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.MultipleGoWorkflowAction`1.Actions">
+            <summary>
+            Action embeded in the step
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.IfWorkflowAction`1.WorkflowIfTrue">
+            <summary>
+            Action embeded in the step if True
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.IfWorkflowAction`1.WorkflowIfFalse">
+            <summary>
+            Action embeded in the step if False
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.IfWorkflowAction`1.Condition">
+            <summary>
+            Condition for steps
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.IfWorkflowAction`1.DynamicQuery">
+            <summary>
+            Dynamic query that is used in cas of 'for'. Must be evaluated just before being run.
+            </summary>
+        </member>
+        <member name="M:TinyWorkflow.Actions.ForWorkflowAction`2.Resolve(`1)">
+            <summary>
+            Resolve the dynamic part of the step.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Actions.ForWorkflowAction`2.Run(`1)">
+            <summary>
+            Run the step
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:TinyWorkflow.Actions.GoWorkflowAction`1.Run(`0)">
+            <summary>
+            Run the step
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="P:TinyWorkflow.Actions.GoWorkflowAction`1.Action">
+            <summary>
+            Action embeded in the step
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.WhileWorkflowAction`1.Workflow">
+            <summary>
+            Action embeded in the step
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.WhileWorkflowAction`1.ConditionToRun">
+            <summary>
+            Condition for running the step
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Actions.WhileWorkflowAction`1.CachedConditionToRun">
+            <summary>
+            Condition result, once evaluated.
+            </summary>
+        </member>
+        <member name="T:TinyWorkflow.Actions.WorkflowActionState">
+            <summary>
+            State of an action.
+            </summary>
+        </member>
+        <member name="F:TinyWorkflow.Actions.WorkflowActionState.Ready">
+            <summary>
+            Ready to be run.
+            </summary>
+        </member>
+        <member name="F:TinyWorkflow.Actions.WorkflowActionState.Blocked">
+            <summary>
+            Blocked. Waiting for an unblock command.
+            </summary>
+        </member>
+        <member name="F:TinyWorkflow.Actions.WorkflowActionState.Ended">
+            <summary>
+            Has been run and is finised.
+            </summary>
+        </member>
+        <member name="T:TinyWorkflow.Workflow`1">
+            <summary>
+            Represent a workflow.
+            Can be configured in fluent mode.
+            </summary>
+            <typeparam name="T">Type of the state</typeparam>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Start(`0)">
+            <summary>
+            Start a workflow with the given workload
+            </summary>
+            <param name="workload"></param>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Reset">
+            <summary>
+            Reset the workflow run state.
+            </summary>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Unblock">
+            <summary>
+            Unblock a blocked workflow.
+            </summary>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Unblock(System.Int32)">
+            <summary>
+            Unblock a blocked workflow.
+            </summary>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.UnblockInternal(System.Int32)">
+            <summary>
+            Unblock a blocked workflow.
+            </summary>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.UnblockAll">
+            <summary>
+            Unblock a blocked workflow.
+            </summary>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Block">
+            <summary>
+            Configure a 'block' step which block the execution of the workflow.
+            </summary>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Block(System.Int32)">
+            <summary>
+            Configure a 'block' step which block the execution of the workflow.
+            </summary>
+            <param name="blockCount">Number of unblock that must be called before starting the workflow.</param>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Block(System.Func{`0,System.Int32})">
+            <summary>
+            Configure a 'block' step which block the execution of the workflow.
+            </summary>
+            <param name="blockCount">Function that retuen dynamic block count. Evaluated late after definition.</param>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Do(System.Action{`0})">
+            <summary>
+            Configure a 'Go' step.
+            </summary>
+            <param name="action">Action that need to be run</param>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.DoAsynch(System.Action{`0}[])">
+            <summary>
+            Configure a 'Go' step.
+            </summary>
+            <param name="actions">Actions that need to be run</param>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Foreach``1(System.Func{`0,System.Collections.Generic.IEnumerable{``0}},System.Action{System.Tuple{``0,`0}})">
+            <summary>
+            Configure a 'Foreach' step.
+            </summary>
+            <typeparam name="U">Type of parameter you want to loop on.</typeparam>
+            <param name="itemExtractor">Function that return the list of items.</param>
+            <param name="action">Action that must be done on each loop.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Foreach``1(System.Func{`0,System.Collections.Generic.IEnumerable{``0}},TinyWorkflow.Workflow{System.Tuple{``0,`0}})">
+            <summary>
+            Configure a 'Foreach' step.
+            </summary>
+            <typeparam name="U"></typeparam>
+            <param name="itemExtractor">Function that will be dynamicaly resolved and list items.</param>
+            <param name="workflow">Workflow that will be run for each item listed.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.While(System.Func{`0,System.Boolean},System.Action{`0})">
+            <summary>
+            Run a step and block while the condition is true.
+            </summary>
+            <param name="action">Action that must be run</param>
+            <param name="condition">Condition to run the action.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.While(System.Func{`0,System.Boolean},TinyWorkflow.Workflow{`0})">
+            <summary>
+            Run a step and block while the condition is true.
+            </summary>
+            <param name="workflow">Workflow that must be run</param>
+            <param name="condition">Condition to run the action.</param>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.If(System.Func{`0,System.Boolean},System.Action{`0},System.Action{`0})">
+            <summary>
+            Run a step depending the condition.
+            </summary>
+            <param name="condition">Condition to run the action.</param>
+            <param name="actionIfTrue">Action that must be run if contition is true</param>
+            <param name="actionIfFalse">Action that must be run if condition is false</param>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.If(System.Func{`0,System.Boolean},TinyWorkflow.Workflow{`0},TinyWorkflow.Workflow{`0})">
+            <summary>
+            Run a step depending the condition.
+            </summary>
+            <param name="condition">Condition to run the action.</param>
+            <param name="actionsIfTrue">Actions that must be run if contition is true</param>
+            <param name="actionsIfFalse">Actions that must be run if condition is false</param>
+            <returns></returns>
+        </member>
+        <member name="M:TinyWorkflow.Workflow`1.Run">
+            <summary>
+            Run the workflow.
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Workflow`1.Workload">
+            <summary>
+            State embeded in the actual Workflow
+            </summary>
+        </member>
+        <member name="P:TinyWorkflow.Workflow`1.State">
+            <summary>
+            State of the workflow.
+            </summary>
+        </member>
+        <member name="T:TinyWorkflow.WorkflowState">
+            <summary>
+            State of workflow
+            </summary>
+        </member>
+        <member name="F:TinyWorkflow.WorkflowState.Running">
+            <summary>
+            Workflow is running
+            </summary>
+        </member>
+        <member name="F:TinyWorkflow.WorkflowState.Blocked">
+            <summary>
+            Workflow is blocked, wwaiting for being unblocked
+            </summary>
+        </member>
+        <member name="F:TinyWorkflow.WorkflowState.NotRunning">
+            <summary>
+            Workflow has not been started
+            </summary>
+        </member>
+        <member name="F:TinyWorkflow.WorkflowState.End">
+            <summary>
+            Workflow has ended
+            </summary>
+        </member>
+    </members>
+</doc>
