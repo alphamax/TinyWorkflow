@@ -1,4 +1,4 @@
-#TinyWorkflow [![GitHub version](https://badge.fury.io/gh/alphamax%2FTinyWorkflow.svg)](https://badge.fury.io/gh/alphamax%2FTinyWorkflow)
+#TinyWorkflow [![GitHub release](https://img.shields.io/github/release/alphamax/TinyWorkflow.svg?maxAge=2592000?style=flat-square)]()
 
 ##Definition
 
