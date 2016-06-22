@@ -1,4 +1,4 @@
-#TinyWorkflow [![GitHub release](https://img.shields.io/github/release/alphamax/TinyWorkflow.svg?maxAge=2592000?style=flat-square)]()
+#TinyWorkflow [![GitHub release](https://img.shields.io/github/release/alphamax/TinyWorkflow.svg?maxAge=2592000?style=flat-square)]() [![license](https://img.shields.io/github/license/alphamax/TinyWorkflow.svg?maxAge=2592000?style=flat-square)]()
 
 ##Definition
 
