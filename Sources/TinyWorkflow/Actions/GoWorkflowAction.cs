@@ -1,59 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TinyWorkflow.Actions
 {
-    internal class GoWorkflowAction<T> : WorkflowAction<T>
-    {
-        #region Public properties
-        /// <summary>
-        /// Action embeded in the step
-        /// </summary>
-        public Action<T> Action { get; private set; }
+	internal class GoWorkflowAction<T> : WorkflowAction<T>
+	{
+		#region Public properties
 
-        public override WorkflowActionState State
-        {
-            get { return state; }
-        }
+		/// <summary>
+		/// Action embeded in the step
+		/// </summary>
+		public Action<T> Action { get; private set; }
 
-        #endregion
+		public override WorkflowActionState State
+		{
+			get { return state; }
+		}
 
-        #region Private Variables
+		#endregion Public properties
 
-        private WorkflowActionState state;
+		#region Private Variables
 
-        #endregion
+		private WorkflowActionState state;
 
-        #region Ctor
+		#endregion Private Variables
 
-        public GoWorkflowAction(Action<T> action)
-        {
-            Action = action;
-            state = WorkflowActionState.Ready;
-        }
+		#region Ctor
 
-        #endregion
+		public GoWorkflowAction(Action<T> action)
+		{
+			Action = action;
+			state = WorkflowActionState.Ready;
+		}
 
-        #region Public methods
+		#endregion Ctor
 
-        public override void Reset()
-        {
-            state = WorkflowActionState.Ready;
-        }
+		#region Public methods
 
-        /// <summary>
-        /// Run the step
-        /// </summary>
-        /// <param name="obj"></param>
-        public override void Run(T obj)
-        {
-            Action(obj);
-            state = WorkflowActionState.Ended;
-        }
+		public override void Reset()
+		{
+			state = WorkflowActionState.Ready;
+		}
 
-        #endregion
-    }
+		/// <summary>
+		/// Run the step
+		/// </summary>
+		/// <param name="obj"></param>
+		public override void Run(T obj)
+		{
+			Action(obj);
+			state = WorkflowActionState.Ended;
+		}
+
+		#endregion Public methods
+	}
 }

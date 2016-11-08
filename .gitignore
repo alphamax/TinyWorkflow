@@ -2,3 +2,5 @@ bin
 obj
 *.suo
 *.vspscc
+/Sources/.vs
+/Sources/TinyWorkflow/project.lock.json
