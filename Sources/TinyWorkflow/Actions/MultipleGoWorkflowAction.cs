@@ -44,10 +44,7 @@ namespace TinyWorkflow.Actions
 
 		public override void Run(T obj)
 		{
-			foreach (var item in Actions)
-			{
-				Task.Factory.StartNew(() => item(obj));
-			}
+		    Task.Run(() => Parallel.ForEach(Actions, (action) => action(obj)));
 			state = WorkflowActionState.Ended;
 		}
 
