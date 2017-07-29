@@ -27,22 +27,30 @@ namespace TinyWorkflow
 			{
 				return _State;
 			}
+		    private set
+		    {
+		        if (value != _State)
+		        {
+		            _State = value;
+                    RaiseWorkflowStateChangedEvent(value);
+		        }
+		    }
 		}
 
-		#endregion Public
+        #endregion Public
 
-		#region Private
+        #region Private
 
-		private readonly List<WorkflowAction<T>> _Actions;
-		private WorkflowState _State;
-		private int _WorkflowStep;
-
-		#endregion Private
+        private readonly List<WorkflowAction<T>> _Actions;
+        private WorkflowState _State;
+        private int _WorkflowStep;
+	    
+	    #endregion Private
 
 		public Workflow()
 		{
 			_Actions = new List<WorkflowAction<T>>();
-			_State = WorkflowState.NotRunning;
+			State = WorkflowState.NotRunning;
 			_WorkflowStep = 0;
 		}
 
@@ -53,23 +61,42 @@ namespace TinyWorkflow
 		public void Start(T workload)
 		{
 			Workload = workload;
-			if (_State == WorkflowState.NotRunning)
+			if (State == WorkflowState.NotRunning)
 			{
-				_State = WorkflowState.Running;
+				State = WorkflowState.Running;
 				Run();
 			}
-			else if (_State == WorkflowState.Running)
+			else if (State == WorkflowState.Running)
 			{
 				Run();
 			}
 		}
 
+        /// <summary>
+        /// Starts a workflow and resets it when it reaches <see cref="WorkflowState.End"/>.
+        /// </summary>
+        /// <param name="workload"></param>
+	    public void StartAndReset(T workload)
+        {
+            //prevent multiple event subscriptions
+            WorkflowStateChanged -= OnWorkflowEnded;
+            WorkflowStateChanged += OnWorkflowEnded;
+
+            Start(workload);
+
+            void OnWorkflowEnded(object sender, WorkflowStateChangedEventArgs eventArgs)
+            {
+                //reset the workflow when it reaches End state
+                if (eventArgs.State == WorkflowState.End) Reset();
+            }
+        }
+
 		public void End()
 		{
 			//Just in case new states later
-			if (_State == WorkflowState.NotRunning || _State == WorkflowState.Running)
+			if (State == WorkflowState.NotRunning || State == WorkflowState.Running)
 			{
-				_State = WorkflowState.End;
+				State = WorkflowState.End;
 			}
 		}
 
@@ -79,7 +106,7 @@ namespace TinyWorkflow
 		public void Reset()
 		{
 			_WorkflowStep = 0;
-			_State = WorkflowState.NotRunning;
+			State = WorkflowState.NotRunning;
 			foreach (var item in _Actions)
 			{
 				item.Reset();
@@ -112,7 +139,7 @@ namespace TinyWorkflow
 			{
 				_Actions[_WorkflowStep].Unblock(level);
 			}
-			_State = WorkflowState.Running;
+			State = WorkflowState.Running;
 		}
 
 		/// <summary>
@@ -244,7 +271,7 @@ namespace TinyWorkflow
 		/// Run a step depending the condition.
 		/// </summary>
 		/// <param name="condition">Condition to run the action.</param>
-		/// <param name="actionsIfTrue">Actions that must be run if contition is true</param>
+		/// <param name="actionsIfTrue">Actions that must be run if condition is true</param>
 		/// <param name="actionsIfFalse">Actions that must be run if condition is false</param>
 		/// <returns></returns>
 		public IWorkflow<T> If(Func<T, bool> condition, IWorkflow<T> actionsIfTrue, IWorkflow<T> actionsIfFalse)
@@ -261,12 +288,12 @@ namespace TinyWorkflow
 		{
 			while (_WorkflowStep < _Actions.Count)
 			{
-				if (_State == WorkflowState.Running)
+				if (State == WorkflowState.Running)
 				{
 					switch (_Actions[_WorkflowStep].State)
 					{
 						case WorkflowActionState.Blocked:
-							_State = WorkflowState.Blocked;
+							State = WorkflowState.Blocked;
 							return;
 
 						case WorkflowActionState.Ended:
@@ -280,7 +307,17 @@ namespace TinyWorkflow
 					}
 				}
 			}
-			_State = WorkflowState.End;
-		}
-	}
+            State = WorkflowState.End;
+        }
+
+	    private void RaiseWorkflowStateChangedEvent(WorkflowState state)
+	    {
+	        WorkflowStateChanged?.Invoke(this, new WorkflowStateChangedEventArgs(state));
+	    }
+
+        /// <summary>
+        /// Occurs when workflow changes its state.
+        /// </summary>
+	    public event EventHandler<WorkflowStateChangedEventArgs> WorkflowStateChanged;
+    }
 }
