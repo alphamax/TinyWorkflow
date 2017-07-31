@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>TynyWorkflow</id>
+    <id>Tiny-Workflow</id>
+    <title>Tiny Workflow</title>
     <version>2.1.0</version>
     <authors>Benjamin Laffont</authors>
     <owners>Benjamin Laffont</owners>
     <licenseUrl>https://github.com/alphamax/TinyWorkflow/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/alphamax/TinyWorkflow</projectUrl>
-    <iconUrl>https://github.com/alphamax/TinyWorkflow/tree/master/Sources/Nuget/Workflow.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/alphamax/TinyWorkflow/master/Sources/Nuget/Workflow.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Little workflow engine with fluent definition</description>
     <releaseNotes>First release.</releaseNotes>
