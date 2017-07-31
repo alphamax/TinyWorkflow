@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TynyWorkflow</id>
+    <version>2.1.0</version>
+    <authors>Benjamin Laffont</authors>
+    <owners>Benjamin Laffont</owners>
+    <licenseUrl>https://github.com/alphamax/TinyWorkflow/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/alphamax/TinyWorkflow</projectUrl>
+    <iconUrl>https://github.com/alphamax/TinyWorkflow/tree/master/Sources/Nuget/Workflow.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Little workflow engine with fluent definition</description>
+    <releaseNotes>First release.</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>Workflow Stateless Fluent</tags>
+  </metadata>
+</package>
