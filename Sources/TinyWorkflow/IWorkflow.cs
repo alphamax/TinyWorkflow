@@ -11,6 +11,8 @@ namespace TinyWorkflow
 
 		void Start(T workload);
 
+	    void StartAndReset(T workload);
+
 		void End();
 
 		void Reset();

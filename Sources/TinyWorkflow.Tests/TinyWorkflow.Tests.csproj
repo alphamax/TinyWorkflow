@@ -60,6 +60,7 @@
     <Compile Include="BugFixes\ForStepBugFixTest.cs" />
     <Compile Include="ComplexTest.cs" />
     <Compile Include="AsynchStepTest.cs" />
+    <Compile Include="StartAndResetTest.cs" />
     <Compile Include="States\ComplexState.cs" />
     <Compile Include="IfStepTest.cs" />
     <Compile Include="States\ConditionState.cs" />

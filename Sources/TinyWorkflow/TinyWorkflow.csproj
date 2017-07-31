@@ -50,6 +50,7 @@
     <Compile Include="IWorkflow.cs" />
     <Compile Include="IWorkflowFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkflowStateChangedEventArgs.cs" />
     <Compile Include="Workflow.cs" />
     <Compile Include="WorkflowFactory.cs" />
     <Compile Include="WorkflowState.cs" />
