@@ -35,3 +35,4 @@ public class SimpleState
     //Your statefull content here
 }
 ```
+Now available in Nuget Package [Here](https://www.nuget.org/packages/Tiny-Workflow/2.1.0)
