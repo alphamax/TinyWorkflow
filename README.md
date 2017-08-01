@@ -1,6 +1,6 @@
-#TinyWorkflow [![GitHub release](https://img.shields.io/github/release/alphamax/TinyWorkflow.svg?maxAge=2592000?style=flat-square)]() [![license](https://img.shields.io/github/license/alphamax/TinyWorkflow.svg?maxAge=2592000?style=flat-square)]()
+# TinyWorkflow [![GitHub release](https://img.shields.io/github/release/alphamax/TinyWorkflow.svg?maxAge=2592000?style=flat-square)]() [![license](https://img.shields.io/github/license/alphamax/TinyWorkflow.svg?maxAge=2592000?style=flat-square)]()
 
-##Definition
+## Definition
 
 This is a little project for a simple but usefull workflow engine.
 This workflow engine support While, Foreach, If, basic actions.
@@ -35,4 +35,4 @@ public class SimpleState
     //Your statefull content here
 }
 ```
-Now available in Nuget Package [Here](https://www.nuget.org/packages/Tiny-Workflow/2.1.0)
+## Now available in Nuget Package [Here](https://www.nuget.org/packages/Tiny-Workflow/2.1.0)
