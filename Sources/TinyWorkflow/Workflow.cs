@@ -83,15 +83,14 @@ namespace TinyWorkflow
             WorkflowStateChanged += OnWorkflowEnded;
 
             Start(workload);
-
-            void OnWorkflowEnded(object sender, WorkflowStateChangedEventArgs eventArgs)
-            {
-                //reset the workflow when it reaches End state
-                if (eventArgs.State == WorkflowState.End) Reset();
-            }
         }
+	    void OnWorkflowEnded(object sender, WorkflowStateChangedEventArgs eventArgs)
+	    {
+	        //reset the workflow when it reaches End state
+	        if (eventArgs.State == WorkflowState.End) Reset();
+	    }
 
-		public void End()
+        public void End()
 		{
 			//Just in case new states later
 			if (State == WorkflowState.NotRunning || State == WorkflowState.Running)
