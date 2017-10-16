@@ -33,7 +33,9 @@ namespace TinyWorkflow
 
 		IWorkflow<T> DoAsynch(params Action<T>[] actions);
 
-		IWorkflow<T> Foreach<U>(Func<T, IEnumerable<U>> itemExtractor, Action<Tuple<U, T>> action);
+	    IWorkflow<T> DoParallel(params Action<T>[] actions);
+
+        IWorkflow<T> Foreach<U>(Func<T, IEnumerable<U>> itemExtractor, Action<Tuple<U, T>> action);
 
 		IWorkflow<T> Foreach<U>(Func<T, IEnumerable<U>> itemExtractor, IWorkflow<Tuple<U, T>> workflow);
 

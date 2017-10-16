@@ -5,7 +5,9 @@ namespace TinyWorkflow.Actions
 {
 	internal class MultipleGoWorkflowAction<T> : WorkflowAction<T>
 	{
-		#region Public properties
+	    private readonly bool m_waitActionsFinish;
+
+	    #region Public properties
 
 		/// <summary>
 		/// Action embeded in the step
@@ -27,9 +29,10 @@ namespace TinyWorkflow.Actions
 
 		#region Ctor
 
-		public MultipleGoWorkflowAction(Action<T>[] actions)
+		public MultipleGoWorkflowAction(Action<T>[] actions, bool waitActionsFinish)
 		{
-			Actions = actions;
+		    m_waitActionsFinish = waitActionsFinish;
+		    Actions = actions;
 			state = WorkflowActionState.Ready;
 		}
 
@@ -44,7 +47,9 @@ namespace TinyWorkflow.Actions
 
 		public override void Run(T obj)
 		{
-		    Task.Run(() => Parallel.ForEach(Actions, (action) => action(obj)));
+		    Task task = Task.Run(() => Parallel.ForEach(Actions, (action) => action(obj)));
+		    if (m_waitActionsFinish)
+		        task.Wait();
 			state = WorkflowActionState.Ended;
 		}
 

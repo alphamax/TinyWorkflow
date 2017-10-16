@@ -83,15 +83,14 @@ namespace TinyWorkflow
             WorkflowStateChanged += OnWorkflowEnded;
 
             Start(workload);
-
-            void OnWorkflowEnded(object sender, WorkflowStateChangedEventArgs eventArgs)
-            {
-                //reset the workflow when it reaches End state
-                if (eventArgs.State == WorkflowState.End) Reset();
-            }
         }
+	    void OnWorkflowEnded(object sender, WorkflowStateChangedEventArgs eventArgs)
+	    {
+	        //reset the workflow when it reaches End state
+	        if (eventArgs.State == WorkflowState.End) Reset();
+	    }
 
-		public void End()
+        public void End()
 		{
 			//Just in case new states later
 			if (State == WorkflowState.NotRunning || State == WorkflowState.Running)
@@ -197,18 +196,29 @@ namespace TinyWorkflow
 		/// <returns></returns>
 		public IWorkflow<T> DoAsynch(params Action<T>[] actions)
 		{
-			_Actions.Add(new MultipleGoWorkflowAction<T>(actions));
+			_Actions.Add(new MultipleGoWorkflowAction<T>(actions, false));
 			return this;
 		}
 
-		/// <summary>
-		/// Configure a 'Foreach' step.
-		/// </summary>
-		/// <typeparam name="U">Type of parameter you want to loop on.</typeparam>
-		/// <param name="itemExtractor">Function that return the list of items.</param>
-		/// <param name="action">Action that must be done on each loop.</param>
-		/// <returns></returns>
-		public IWorkflow<T> Foreach<U>(Func<T, IEnumerable<U>> itemExtractor, Action<Tuple<U, T>> action)
+	    /// <summary>
+	    /// Configure a 'Go' step.
+	    /// </summary>
+	    /// <param name="actions">Actions that need to be run</param>
+	    /// <returns></returns>
+	    public IWorkflow<T> DoParallel(params Action<T>[] actions)
+	    {
+	        _Actions.Add(new MultipleGoWorkflowAction<T>(actions, true));
+	        return this;
+	    }
+		
+        /// <summary>
+        /// Configure a 'Foreach' step.
+        /// </summary>
+        /// <typeparam name="U">Type of parameter you want to loop on.</typeparam>
+        /// <param name="itemExtractor">Function that return the list of items.</param>
+        /// <param name="action">Action that must be done on each loop.</param>
+        /// <returns></returns>
+        public IWorkflow<T> Foreach<U>(Func<T, IEnumerable<U>> itemExtractor, Action<Tuple<U, T>> action)
 		{
 			return Foreach(itemExtractor, (new Workflow<Tuple<U, T>>()).Do(action));
 		}
