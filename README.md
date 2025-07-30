@@ -8,7 +8,7 @@ This workflow engine support While, Foreach, If, basic actions.
 The project is provided with unit tests.
 
 A technical blog post is available here :
-[Full documentation](http://www.alphablog.org/2013/01/12/a-little-workflow-engine/)
+[Full documentation](https://alphablog.org/a-little-workflow-engine/)
 
 ##Installation
 
